@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     dst = "output/mpar_path.json"
 
-    mpars = {}
+    result = {}
     for tech, root_dir in root_dirs.items():
         # Find all .mpar files in the root directory and its subdirectories
         paths = get_mpar_paths(root_dir)
@@ -48,10 +48,10 @@ if __name__ == "__main__":
 
         # Create Mpar objects from the paths and store their dictionary representations in the mpars dictionary
         for i, path in enumerate(paths):
-            mpar = Mpar(paths[0])
-            mpars[mpar.name] = mpar.to_dict()
-            print(f"[{i+1}/{len(paths)}] : {mpar.name}")
+            mpar = Mpar(path)
+            result[mpar.name] = mpar.to_dict()
+            print(f"[{i+1}/{len(paths)}] {mpar.name}")
 
     # Write the mpars dictionary to a JSON file
     with open(dst, "w", encoding="utf-8") as f:
-        json.dump(mpars, f, indent=4, ensure_ascii=False)
+        json.dump(result, f, indent=4, ensure_ascii=False)
