@@ -64,6 +64,8 @@ def link_mpar():
         link[name] = {
             "rpar": find_rpar_from_mpar(rpars, mpar),
         }
+        print(name)
+        print(link[name])
 
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(link, f, indent=4, ensure_ascii=False)
