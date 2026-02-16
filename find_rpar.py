@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import json
+import re
 
 from rpar import Rpar
 
@@ -16,6 +17,15 @@ def get_mpar_paths(root_dir: str) -> list[Path]:
     elif root.is_file() and root.suffix == SUFFIX:
         result.append(root)
     return result
+
+
+def natural_key(s: str):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+
+
+def sort_dict_natural(d: dict[str, object]) -> dict[str, object]:
+    keys = sorted(d.keys(), key=natural_key)
+    return {k: d[k] for k in keys}
 
 
 if __name__ == "__main__":
@@ -43,4 +53,4 @@ if __name__ == "__main__":
 
     # Write the mpars dictionary to a JSON file
     with open(dst, "w", encoding="utf-8") as f:
-        json.dump(result, f, indent=4, ensure_ascii=False)
+        json.dump(sort_dict_natural(result), f, indent=4, ensure_ascii=False)
