@@ -40,12 +40,18 @@ if __name__ == "__main__":
 
     mpars = {}
     for tech, root_dir in root_dirs.items():
+        # Find all .mpar files in the root directory and its subdirectories
         paths = get_mpar_paths(root_dir)
+
+        # Filter the paths to keep only those that are not contained in another path with a longer name
         paths = filter_by_name_containment_keep_longer(paths)
 
-        for path in paths:
+        # Create Mpar objects from the paths and store their dictionary representations in the mpars dictionary
+        for i, path in enumerate(paths):
             mpar = Mpar(paths[0])
             mpars[mpar.name] = mpar.to_dict()
+            print(f"[{i+1}/{len(paths)}] : {path}")
 
+    # Write the mpars dictionary to a JSON file
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(mpars, f, indent=4, ensure_ascii=False)
