@@ -48,7 +48,7 @@ def find_rpar_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> str:
     return ""
 
 
-if __name__ == "__main__":
+def link_mpar():
     dst = "output/link_mpar.json"
 
     # Mpar 読み込み
@@ -67,3 +67,7 @@ if __name__ == "__main__":
 
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(link, f, indent=4, ensure_ascii=False)
+
+
+if __name__ == "__main__":
+    link_mpar()
