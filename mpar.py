@@ -1,5 +1,13 @@
 import re
 from pathlib import Path
+from typing import TypedDict
+
+
+class MparDict(TypedDict):
+    path: str
+    id: str
+    tech_ver: str
+    stack: dict
 
 
 class Mpar:
@@ -12,37 +20,44 @@ class Mpar:
             self.text = f.read()
 
         self.id = self._extract_tracking_id()
+        piezo, self.tech_ver = self._extract_piezo_and_version()
         self.stack = self._extract_stack()
-        self.stack["piezo"], self.tech_ver = self._extract_piezo_and_version()
+        self.stack["piezo"] = self._modify_piezo(piezo)
 
-    def to_dict(self) -> dict:
-        return {
-            "path": self.filepath.as_posix(),
-            "id": self.id,
-            "tech_ver": self.tech_ver,
-            "stack": self.stack
-        }
+    def _modify_piezo(self, piezo: str) -> str:
+        # (応急対応) R036 で piezo に 36 が含まれていない場合は 36_LT とする
+        if "R036" in self.filepath.name and "36" not in piezo:
+            return "36_LT"
+        return piezo
+
+    def to_dict(self) -> MparDict:
+        return MparDict(
+            path=self.filepath.as_posix(),
+            id=self.id,
+            tech_ver=self.tech_ver,
+            stack=self.stack
+        )
 
     @property
     def name(self) -> str:
         return self.filepath.name
 
-    def _extract_piezo_and_version(self):
+    def _extract_piezo_and_version(self) -> tuple[str, str]:
         header_line = self.text.splitlines()[0]
 
         # piezo: "MPS/42_LT" のような "MPS/xxx" の xxx 部分
         m1 = re.search(r"MPS/([A-Za-z0-9_]+)", header_line)
-        piezo = m1.group(1) if m1 else None
+        piezo = m1.group(1) if m1 else ""
 
         # tech_ver: "V2.5" の 2.5 部分
         m2 = re.search(r"V([0-9]+(?:\.[0-9]+)?)", header_line)
-        tech_ver = m2.group(1) if m2 else None
+        tech_ver = m2.group(1) if m2 else ""
 
         return piezo, tech_ver
 
-    def _extract_tracking_id(self) -> str | None:
+    def _extract_tracking_id(self) -> str:
         m = re.search(r"Tracking ID\s*:\s*([^\n\r]+)", self.text)
-        return m.group(1).strip() if m else None        # Tracking ID is expected to be in the format "Tracking ID : <value>" in the .mpar file
+        return m.group(1).strip() if m else ""        # Tracking ID is expected to be in the format "Tracking ID : <value>" in the .mpar file
 
     def _extract_stack(self) -> dict:
         m = re.search(r"\(([^)]*)\)", self.text)

@@ -1,5 +1,12 @@
 import re
 from pathlib import Path
+from typing import TypedDict
+
+
+class RparDict(TypedDict):
+    path: str
+    mpar: str
+    stack: dict
 
 
 class Rpar:
@@ -31,12 +38,12 @@ class Rpar:
         if "#range" in self.text:
             self.stack = self._extract_stack_from_range()
 
-    def to_dict(self) -> dict:
-        return {
-            "path": self.filepath.as_posix(),
-            "mpar": self.mpar,
-            "stack": self.stack
-        }
+    def to_dict(self) -> RparDict:
+        return RparDict(
+            path=self.filepath.as_posix(),
+            mpar=self.mpar,
+            stack=self.stack
+        )
 
     @property
     def name(self) -> str:
