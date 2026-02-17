@@ -41,7 +41,7 @@ def merge_mpar_stack(mpars: dict, rpar: Rpar):
 
 
 def add_stack_from_db(rpar: Rpar, db: pd.DataFrame):
-    print(db[rpar.id])
+    rpar.stack["piezo"] = db.loc[rpar.id, "piezo"]
 
 
 if __name__ == "__main__":

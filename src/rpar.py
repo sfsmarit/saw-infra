@@ -17,7 +17,7 @@ class Rpar:
     def load(self, filepath):
         # ファイル名から ID を抽出
         m = re.search(r'(?<=_)(\d+)(?=\.)', Path(filepath).stem)
-        self.id: str = m.group(1) if m else ""
+        self.id: int = int(m.group(1)) if m else 0
 
         self.mpar: str = ""
         self.stack: dict = {}
