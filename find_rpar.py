@@ -56,9 +56,10 @@ if __name__ == "__main__":
 
             # 対応するMparが分かっている場合は、MparのスタックをRparのスタックに追加する
             if mpars and rpar.mpar_stem:
-                mpar = mpars.get(rpar.mpar_stem, {})
-                mpar_stack = mpar.get("stack", {})
-                rpar.stack |= mpar_stack
+                for name, mpar in mpars:
+                    if rpar.mpar_stem in name:
+                        rpar.stack |= mpar["stack"]
+                        break
 
             result[rpar.name] = rpar.to_dict()
             print(f"[{i+1}/{len(paths)}] {rpar.name}")
