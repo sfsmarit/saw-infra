@@ -57,7 +57,7 @@ if __name__ == "__main__":
             # 対応するMparが分かっている場合は、MparのスタックをRparのスタックに追加する
             if mpars and rpar.mpar:
                 s = Path(rpar.mpar).stem
-                for name, mpar in mpars:
+                for name, mpar in mpars.items():
                     if s in name:
                         print(s)
                         print(mpar)
