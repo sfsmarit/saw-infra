@@ -37,11 +37,12 @@ def _is_same_tcsaw_stack(mpar_stack: dict, rpar_stack: dict) -> bool:
     return False
 
 
-def find_rpar_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> str:
+def find_rpars_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> list[str]:
     mpar_name = Path(mpar["path"]).name
     mpar_stack = mpar["stack"]
     is_mps = "mps" in mpar_name.lower()
 
+    rpar_names = []
     for name, rpar in rpars.items():
         # mpar 名が一致する rpar を探す
         if rpar["mpar"] == mpar_name:
@@ -57,12 +58,12 @@ def find_rpar_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> str:
 
         if is_mps:
             if _is_same_mps_stack(mpar_stack, r_stack):
-                return name
+                rpar_names.append(name)
         else:
             if _is_same_tcsaw_stack(mpar_stack, r_stack):
-                return name
+                rpar_names.append(name)
 
-    return ""
+    return rpar_names
 
 
 def link_mpar():
@@ -79,7 +80,7 @@ def link_mpar():
     link = {}
     for name, mpar in mpars.items():
         link[name] = {
-            "rpar": find_rpar_from_mpar(rpars, mpar),
+            "rpar": find_rpars_from_mpar(rpars, mpar),
         }
         # print(name)
         # print("\t", link[name])
