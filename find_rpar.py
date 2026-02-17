@@ -49,6 +49,11 @@ def merge_db_stack_for_tcsaw(rpar: Rpar, db: pd.DataFrame):
     rpar.stack['piezo'] = ""
 
 
+def is_valid(rpar: Rpar, db: pd.DataFrame) -> bool:
+    row = db.loc[db["id"] == rpar.id, "version"]
+    return int(row.iloc[0]) > 1 if not row.empty else False
+
+
 if __name__ == "__main__":
     dst = "output/rpar.json"
 
@@ -77,6 +82,14 @@ if __name__ == "__main__":
         # Create Mpar objects from the paths and store their dictionary representations in the mpars dictionary
         for i, path in enumerate(paths):
             rpar = Rpar(path)
+
+            if rpar.is_mps:
+                df = df_mpsdb
+            else:
+                df = df_tcsaw
+
+            if not is_valid(rpar, df):
+                continue
 
             # Mpar が指定されていればMparのスタックを追加する
             merge_mpar_stack(mpars, rpar)
