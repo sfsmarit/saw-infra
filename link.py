@@ -78,8 +78,9 @@ def link_mpar():
         link[name] = {
             "rpar": find_rpars_from_mpar(rpars, mpar),
         }
-        # print(name)
-        # print("\t", link[name])
+        print(name)
+        print(link[name])
+        print()
 
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(link, f, indent=4, ensure_ascii=False)
