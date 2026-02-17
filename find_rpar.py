@@ -49,12 +49,16 @@ def merge_db_stack_for_tcsaw(rpar: Rpar, db: pd.DataFrame):
     rpar.stack['piezo'] = ""
 
 
-def is_valid(rpar: Rpar, db: pd.DataFrame) -> bool:
+def is_valid_for_mps(rpar: Rpar, db: pd.DataFrame) -> bool:
     row = db.loc[db["id"] == rpar.id, "version"]
     try:
         return int(row.iloc[0]) > 1
     except:
         return False
+
+
+def is_valid_tcsaw(rpar: Rpar, db: pd.DataFrame) -> bool:
+    return True
 
 
 if __name__ == "__main__":
@@ -87,11 +91,11 @@ if __name__ == "__main__":
             rpar = Rpar(path)
 
             if rpar.is_mps:
-                df = df_mpsdb
+                is_valid = is_valid_for_mps(rpar, df_mpsdb)
             else:
-                df = df_tcsaw
+                is_valid = is_valid_tcsaw(rpar, df_tcsaw)
 
-            if not is_valid(rpar, df):
+            if not is_valid:
                 continue
 
             # Mpar が指定されていればMparのスタックを追加する
