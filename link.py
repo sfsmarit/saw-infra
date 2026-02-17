@@ -9,7 +9,7 @@ import json
 
 
 def _get_layer_value(stack: dict, layer: str):
-    """スタック情報から指定した layer_name の値を取得する"""
+    """指定した layer の値を取得する"""
     for s in stack.keys():
         if layer.lower() in s.lower():
             return stack[s]
@@ -17,8 +17,10 @@ def _get_layer_value(stack: dict, layer: str):
 
 
 def _is_same_mps_stack(mpar_stack: dict, rpar_stack: dict) -> bool:
-    """m_stack と r_stack が同じスタックを表しているかどうかを判定する"""
+    """MPS: mpar と rpar のスタックが同じであれば True を返す"""
+    # 比較対象のレイヤー
     target_layers = ["Al", "Mo", "LT", "SiO2", "piezo"]
+
     for layer in target_layers:
         mpar_value = _get_layer_value(mpar_stack, layer)
         rpar_value = _get_layer_value(rpar_stack, layer)
@@ -34,10 +36,12 @@ def _is_same_mps_stack(mpar_stack: dict, rpar_stack: dict) -> bool:
 
 
 def _is_same_tcsaw_stack(mpar_stack: dict, rpar_stack: dict) -> bool:
+    """TC-SAW: mpar と rpar のスタックが同じであれば True を返す"""
     return False
 
 
 def find_rpars_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> list[str]:
+    """mpar に対応する rpar の名前のリストを返す"""
     mpar_name = Path(mpar["path"]).name
     mpar_stack = mpar["stack"]
     is_mps = "mps" in mpar_name.lower()
@@ -62,7 +66,7 @@ def find_rpars_from_mpar(rpars: dict[str, RparDict], mpar: MparDict) -> list[str
     return rpar_names
 
 
-def link_mpar():
+def main():
     dst = "output/link_mpar.json"
 
     # Mpar 読み込み
@@ -87,4 +91,4 @@ def link_mpar():
 
 
 if __name__ == "__main__":
-    link_mpar()
+    main()
