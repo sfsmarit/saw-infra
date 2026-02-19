@@ -57,8 +57,8 @@ if __name__ == "__main__":
         }
 
     # DB に登録されている ID を取得
-    df = db.load("mpars")
-    registered_ids = df["infra_tracking_id"].to_list()
+    # df = db.load("mpars")
+    # registered_ids = df["infra_tracking_id"].to_list()
 
     result = {}
     for tech, root_dir in root_dirs.items():
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
             # IDが登録されていないものは除外
 
-            if any(normalize(mpar.id) in normalize(x) for x in registered_ids):
+            if True:  # any(normalize(mpar.id) in normalize(x) for x in registered_ids):
                 result[mpar.name] = mpar.to_dict()
                 print(f"[{i+1}/{len(paths)}] {mpar.name}")
             else:
