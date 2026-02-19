@@ -68,6 +68,8 @@ if __name__ == "__main__":
         for i, path in enumerate(paths):
             mpar = Mpar(path)
 
+            print(mpar.id, mpar.name)
+
             # IDが登録されていないものは除外
             if mpar.id not in registered_ids:
                 print(f"\tSkip {mpar.id}")
