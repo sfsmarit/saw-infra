@@ -40,6 +40,10 @@ def sort_dict_natural(d: dict[str, object]) -> dict[str, object]:
     return {k: d[k] for k in keys}
 
 
+def normalize(s: str) -> str:
+    return re.sub(r"[^0-9A-Za-z]", "", s)
+
+
 if __name__ == "__main__":
     dst = "output/mpar.json"
 
@@ -68,15 +72,13 @@ if __name__ == "__main__":
         for i, path in enumerate(paths):
             mpar = Mpar(path)
 
-            print(mpar.id, mpar.name)
-
             # IDが登録されていないものは除外
-            if mpar.id not in registered_ids:
-                print(f"\tSkip {mpar.id}")
-                continue
 
-            result[mpar.name] = mpar.to_dict()
-            print(f"[{i+1}/{len(paths)}] {mpar.name}")
+            if any(normalize(mpar.id) in normalize(x) for x in registered_ids):
+                result[mpar.name] = mpar.to_dict()
+                print(f"[{i+1}/{len(paths)}] {mpar.name}")
+            else:
+                print(f"[{i+1}/{len(paths)}] <skipped> {mpar.name}")
 
     # Write the mpars dictionary to a JSON file
     with open(dst, "w", encoding="utf-8") as f:
